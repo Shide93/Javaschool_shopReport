@@ -1,14 +1,15 @@
-package org.jboss.as.quickstarts.ejbinwar.dao.dto;
+package org.jboss.as.quickstarts.ejbinwar.ejb.dto;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
 /**
  * DTO object for sending data by REST service.
  */
-public class Report {
+public class Report implements Serializable{
 
     /**
      * Shop total sales.
@@ -16,14 +17,14 @@ public class Report {
     private long totalSales;
 
     /**
-     * Sales for a specified period.
+     * Sales for a specified dateFrom.
      */
     private long periodSales;
 
     /**
      * Shop total orders.
      */
-    private int totalOrders;
+    private long totalOrders;
 
     /**
      * Orders count per status.
@@ -39,11 +40,6 @@ public class Report {
      * The Top products.
      */
     private List<Product> topProducts;
-
-    /**
-     * The Out of stock.
-     */
-    private List<Product> outOfStock;
 
     /**
      * Gets total sales.
@@ -86,7 +82,7 @@ public class Report {
      *
      * @return the total orders
      */
-    public int getTotalOrders() {
+    public long getTotalOrders() {
         return totalOrders;
     }
 
@@ -95,7 +91,7 @@ public class Report {
      *
      * @param totalOrders the total orders
      */
-    public void setTotalOrders(final int totalOrders) {
+    public void setTotalOrders(final long totalOrders) {
         this.totalOrders = totalOrders;
     }
 
@@ -153,21 +149,15 @@ public class Report {
         this.topProducts = topProducts;
     }
 
-    /**
-     * Gets out of stock.
-     *
-     * @return the out of stock
-     */
-    public List<Product> getOutOfStock() {
-        return outOfStock;
+    public long getPeriodOrders() {
+        long ordersCount = 0L;
+        for (Map.Entry<String, Integer> order : ordersPerStatus.entrySet()) {
+            ordersCount += order.getValue();
+        }
+        return ordersCount;
     }
-
-    /**
-     * Sets out of stock.
-     *
-     * @param outOfStock the out of stock
-     */
-    public void setOutOfStock(final List<Product> outOfStock) {
-        this.outOfStock = outOfStock;
+    public double getSalesPercent(double value) {
+        return new BigDecimal(value / this.periodSales * 100)
+                .setScale(2, RoundingMode.UP).doubleValue();
     }
 }

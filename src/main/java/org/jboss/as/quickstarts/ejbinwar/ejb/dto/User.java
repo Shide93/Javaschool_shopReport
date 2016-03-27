@@ -1,11 +1,12 @@
-package org.jboss.as.quickstarts.ejbinwar.dao.dto;
+package org.jboss.as.quickstarts.ejbinwar.ejb.dto;
 
 
+import java.io.Serializable;
 
 /**
  * The type User dto.
  */
-public class User {
+public class User implements Serializable {
     /**
      * The Name.
      */
@@ -21,11 +22,11 @@ public class User {
     /**
      * The Orders count.
      */
-    private int ordersCount;
+    private long ordersCount;
     /**
      * The Order total.
      */
-    private int orderTotal;
+    private long orderTotal;
 
 
     /**
@@ -69,7 +70,7 @@ public class User {
      *
      * @return the orders count
      */
-    public int getOrdersCount() {
+    public long getOrdersCount() {
         return ordersCount;
     }
 
@@ -78,7 +79,7 @@ public class User {
      *
      * @param ordersCount the orders count
      */
-    public void setOrdersCount(final int ordersCount) {
+    public void setOrdersCount(final long ordersCount) {
         this.ordersCount = ordersCount;
     }
 
@@ -87,7 +88,7 @@ public class User {
      *
      * @return the order total
      */
-    public int getOrderTotal() {
+    public long getOrderTotal() {
         return orderTotal;
     }
 
@@ -96,7 +97,7 @@ public class User {
      *
      * @param orderTotal the order total
      */
-    public void setOrderTotal(final int orderTotal) {
+    public void setOrderTotal(final long orderTotal) {
         this.orderTotal = orderTotal;
     }
 

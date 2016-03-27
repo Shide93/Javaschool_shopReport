@@ -1,10 +1,12 @@
-package org.jboss.as.quickstarts.ejbinwar.dao.dto;
+package org.jboss.as.quickstarts.ejbinwar.ejb.dto;
 
+
+import java.io.Serializable;
 
 /**
  * The type Product dto.
  */
-public class Product {
+public class Product implements Serializable {
     /**
      * The Name.
      */
@@ -16,15 +18,15 @@ public class Product {
     /**
      * The Price.
      */
-    private int price;
+    private long price;
     /**
      * The Total sales.
      */
-    private int totalSales;
+    private long totalSales;
     /**
      * The Stock.
      */
-    private int stock;
+    private long stock;
 
     /**
      * Gets name.
@@ -67,7 +69,7 @@ public class Product {
      *
      * @return the price
      */
-    public int getPrice() {
+    public long getPrice() {
         return price;
     }
 
@@ -76,7 +78,7 @@ public class Product {
      *
      * @param price the price
      */
-    public void setPrice(final int price) {
+    public void setPrice(final long price) {
         this.price = price;
     }
 
@@ -85,7 +87,7 @@ public class Product {
      *
      * @return the total sales
      */
-    public int getTotalSales() {
+    public long getTotalSales() {
         return totalSales;
     }
 
@@ -94,7 +96,7 @@ public class Product {
      *
      * @param totalSales the total sales
      */
-    public void setTotalSales(final int totalSales) {
+    public void setTotalSales(final long totalSales) {
         this.totalSales = totalSales;
     }
 
@@ -103,7 +105,7 @@ public class Product {
      *
      * @return the stock
      */
-    public int getStock() {
+    public long getStock() {
         return stock;
     }
 
@@ -112,7 +114,7 @@ public class Product {
      *
      * @param stock the stock
      */
-    public void setStock(final int stock) {
+    public void setStock(final long stock) {
         this.stock = stock;
     }
 }
