@@ -1,4 +1,4 @@
-package org.jboss.as.quickstarts.ejbinwar.ejb.dto;
+package com.tsystems.javaschool.report.ejb.dto;
 
 
 import java.io.Serializable;

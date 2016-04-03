@@ -1,16 +1,12 @@
-package org.jboss.as.quickstarts.ejbinwar.ejb;
+package com.tsystems.javaschool.report.ejb;
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.CMYKColor;
-import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.draw.DottedLineSeparator;
-import org.jboss.as.quickstarts.ejbinwar.ejb.dto.Product;
-import org.jboss.as.quickstarts.ejbinwar.ejb.dto.Report;
-import org.jboss.as.quickstarts.ejbinwar.ejb.dto.User;
+import com.tsystems.javaschool.report.ejb.dto.Product;
+import com.tsystems.javaschool.report.ejb.dto.Report;
+import com.tsystems.javaschool.report.ejb.dto.User;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -24,6 +20,7 @@ import java.util.Map;
  * Created by Shide on 26.03.2016.
  */
 @Stateless
+//@Singleton //TODO: singleton?
 public class ReportServiceRestImpl implements ReportService {
 
     public static final String REST_SERVICE_ENTRY_POINT
@@ -31,14 +28,11 @@ public class ReportServiceRestImpl implements ReportService {
     private SimpleDateFormat fmt
             = new SimpleDateFormat("dd-MM-yyyy");
 
-
-    @EJB
-    private ReportService reportDao;
-
     @Override
     public Report getShopReport(final Date dateFrom,
                                 final Integer topUsersCount,
-                                final Integer topProductsCount) {
+                                final Integer topProductsCount,
+                                final String accessToken) {
 
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(REST_SERVICE_ENTRY_POINT + "report/");
@@ -46,7 +40,8 @@ public class ReportServiceRestImpl implements ReportService {
                     target = target.queryParam("dateFrom", fmt.format(dateFrom));
                 }
                 target = target.queryParam("topUsersCount", topUsersCount)
-                .queryParam("topProductsCount", topProductsCount);
+                .queryParam("topProductsCount", topProductsCount)
+                .queryParam("accessToken", accessToken);
         Report report = target.request().get(Report.class);
         //TODO: handle webservice errors
         client.close();

@@ -1,11 +1,9 @@
-package org.jboss.as.quickstarts.ejbinwar.ejb;
+package com.tsystems.javaschool.report.ejb;
 
 import com.itextpdf.text.DocumentException;
-import org.jboss.as.quickstarts.ejbinwar.ejb.dto.Report;
-import org.primefaces.model.StreamedContent;
+import com.tsystems.javaschool.report.ejb.dto.Report;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -14,8 +12,9 @@ import java.util.Date;
 public interface ReportService {
 
     Report getShopReport(Date dateFrom,
-                     Integer maxUsers,
-                     Integer maxProducts);
+                         Integer maxUsers,
+                         Integer maxProducts,
+                         String accessToken);
 
     void generatePDF(Report report, Date dateFrom, String path)
             throws DocumentException, FileNotFoundException;

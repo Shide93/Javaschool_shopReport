@@ -1,10 +1,11 @@
-package org.jboss.as.quickstarts.ejbinwar.controller;
+package com.tsystems.javaschool.report.controller;
 
 import com.itextpdf.text.DocumentException;
-import org.jboss.as.quickstarts.ejbinwar.ejb.ReportService;
-import org.jboss.as.quickstarts.ejbinwar.ejb.dto.Report;
+import com.tsystems.javaschool.report.ejb.ReportService;
+import com.tsystems.javaschool.report.ejb.dto.Report;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.chart.PieChartModel;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -14,11 +15,9 @@ import javax.servlet.ServletContext;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by Shide on 26.03.2016.
@@ -32,6 +31,8 @@ public class ReportController implements Serializable {
     private Date dateFrom;
     private int topUsersCount;
     private int topProductsCount;
+    private String accessToken;
+    private PieChartModel pieChart;
     private SimpleDateFormat fmt
             = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -40,7 +41,7 @@ public class ReportController implements Serializable {
 
     public String showReport() {
         report = reportService.getShopReport(this.dateFrom, this.topUsersCount,
-                this.topProductsCount);
+                this.topProductsCount, this.accessToken);
         return "report";
     }
 
@@ -54,7 +55,7 @@ public class ReportController implements Serializable {
 
     public StreamedContent getPdf() {
 
-        String path = "/resources/report.pdf";
+        String path = "resources/report.pdf";
         ServletContext context = ((ServletContext)FacesContext.getCurrentInstance()
                 .getExternalContext().getContext());
         try {
@@ -100,5 +101,31 @@ public class ReportController implements Serializable {
             return null;
         }
         return fmt.format(dateFrom);
+    }
+
+    public PieChartModel getPieChart() {
+        if (pieChart == null) {
+            pieChart = new PieChartModel();
+            for (Map.Entry<String, Integer> status
+                    : report.getOrdersPerStatus().entrySet()) {
+                pieChart.set(status.getKey(), status.getValue());
+            }
+            pieChart.setTitle("Orders per status");
+            pieChart.setShowDataLabels(true);
+            pieChart.setShowDatatip(true);
+        }
+        return pieChart;
+    }
+
+    public void setPieChart(final PieChartModel pieChart) {
+        this.pieChart = pieChart;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(final String accessToken) {
+        this.accessToken = accessToken;
     }
 }

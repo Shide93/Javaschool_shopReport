@@ -15,11 +15,14 @@
                             <p:outputLabel for="topUsersCount" value="Top users count:" />
                             <p:inputText id="topUsersCount" value="#{reportController.topUsersCount}"/>
 
-                            <p:outputLabel for="topUsersCount" value="Top products count:" />
+                            <p:outputLabel for="topProductsCount" value="Top products count:" />
                             <p:inputText id="topProductsCount" value="#{reportController.topProductsCount}"/>
 
                             <p:outputLabel for="mask" value="Report from:" />
                             <p:calendar id="mask" value="#{reportController.dateFrom}" pattern="dd-MM-yyyy" mask="true" />
+
+                            <p:outputLabel for="accessToken" value="Access token:" />
+                            <p:inputText id="accessToken" value="#{reportController.accessToken}"/>
 
                             <p:commandButton value="Submit" action="#{reportController.showReport()}"/>
                         </h:panelGrid>
