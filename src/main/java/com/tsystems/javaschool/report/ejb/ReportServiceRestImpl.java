@@ -7,6 +7,7 @@ import com.tsystems.javaschool.report.ejb.dto.Product;
 import com.tsystems.javaschool.report.ejb.dto.Report;
 import com.tsystems.javaschool.report.ejb.dto.User;
 
+import javax.ejb.Singleton;
 import javax.ejb.Stateless;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -19,8 +20,7 @@ import java.util.Map;
 /**
  * Created by Shide on 26.03.2016.
  */
-@Stateless
-//@Singleton //TODO: singleton?
+@Singleton
 public class ReportServiceRestImpl implements ReportService {
 
     public static final String REST_SERVICE_ENTRY_POINT
@@ -35,9 +35,11 @@ public class ReportServiceRestImpl implements ReportService {
                                 final String accessToken) {
 
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(REST_SERVICE_ENTRY_POINT + "report/");
+        WebTarget target =
+                client.target(REST_SERVICE_ENTRY_POINT + "report/");
                 if (dateFrom != null) {
-                    target = target.queryParam("dateFrom", fmt.format(dateFrom));
+                    target = target.queryParam("dateFrom",
+                            fmt.format(dateFrom));
                 }
                 target = target.queryParam("topUsersCount", topUsersCount)
                 .queryParam("topProductsCount", topProductsCount)
@@ -49,16 +51,21 @@ public class ReportServiceRestImpl implements ReportService {
     }
 
     @Override
-    public void generatePDF(final Report report, Date dateFrom, String path)
+    public void generatePDF(final Report report, final Date dateFrom, final String path)
             throws DocumentException, FileNotFoundException {
 
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
+        PdfWriter writer = PdfWriter.getInstance(document,
+                new FileOutputStream(path));
         document.open();
-        Font chapterFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 20, Font.BOLD);
-        Font subHeaderFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLDITALIC);
-        Font paragraphFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
-        Font cellHeaderFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font chapterFont = FontFactory.getFont(FontFactory.TIMES_ROMAN,
+                20, Font.BOLD);
+        Font subHeaderFont = FontFactory.getFont(FontFactory.TIMES_ROMAN,
+                14, Font.BOLDITALIC);
+        Font paragraphFont = FontFactory.getFont(FontFactory.TIMES_ROMAN,
+                12, Font.NORMAL);
+        Font cellHeaderFont = FontFactory.getFont(FontFactory.TIMES_ROMAN,
+                        12, Font.BOLD);
         float defaultSpacing = 20f;
 
         //Header
@@ -78,17 +85,13 @@ public class ReportServiceRestImpl implements ReportService {
             periodParagraph = new Paragraph("Sales information for full period", subHeaderFont);
         }
         periodParagraph.setAlignment(Element.ALIGN_CENTER);
-        periodParagraph.setSpacingAfter(defaultSpacing*2);
+        periodParagraph.setSpacingAfter(defaultSpacing * 2);
         document.add(periodParagraph);
 
-        //Total information
-//        DottedLineSeparator dottedline = new DottedLineSeparator();
-//        dottedline.setOffset(-2);
-//        dottedline.setGap(2f);
-//        period.add(dottedline);
-//        document.add(period);
-        document.add(new Paragraph("Total orders: " + report.getPeriodOrders(), paragraphFont));
-        document.add(new Paragraph("Total Sales: " + report.getPeriodSales(), paragraphFont));
+        document.add(new Paragraph("Total orders: "
+                + report.getPeriodOrders(), paragraphFont));
+        document.add(new Paragraph("Total Sales: "
+                + report.getPeriodSales(), paragraphFont));
 
         //Orders by statuses
         PdfPTable ordersPerStatus = new PdfPTable(2);
@@ -96,7 +99,8 @@ public class ReportServiceRestImpl implements ReportService {
         ordersPerStatus.setSpacingBefore(defaultSpacing);
         ordersPerStatus.addCell(new Phrase("Status", cellHeaderFont));
         ordersPerStatus.addCell(new Phrase("Orders", cellHeaderFont));
-        for(Map.Entry<String, Integer> status : report.getOrdersPerStatus().entrySet()){
+        for (Map.Entry<String, Integer> status
+                : report.getOrdersPerStatus().entrySet()) {
             ordersPerStatus.addCell(status.getKey());
             ordersPerStatus.addCell(status.getValue().toString());
         }
@@ -115,19 +119,21 @@ public class ReportServiceRestImpl implements ReportService {
         topUsers.addCell(new Phrase("% of total", cellHeaderFont));
         topUsers.setWidthPercentage(100);
         topUsers.setHeaderRows(1);
-        for(User user : report.getTopUsers()){
-            topUsers.addCell(user.getName() + " " + user.getLastName());
+        for (User user : report.getTopUsers()) {
+            topUsers.addCell(user.getName() + " "
+                    + user.getLastName());
             topUsers.addCell(user.getEmail());
             topUsers.addCell("" + user.getOrdersCount());
             topUsers.addCell("" + user.getOrderTotal());
             topUsers.addCell("" + report.getSalesPercent(
-                    (double)user.getOrderTotal()));
+                    (double) user.getOrderTotal()));
 
         }
         document.add(topUsers);
 
         //Top products table
-        Paragraph productsParagraph = new Paragraph("Top products", subHeaderFont);
+        Paragraph productsParagraph = new Paragraph("Top products",
+                subHeaderFont);
         productsParagraph.setAlignment(Element.ALIGN_CENTER);
         productsParagraph.setSpacingBefore(defaultSpacing);
         productsParagraph.setSpacingAfter(defaultSpacing);
@@ -140,13 +146,15 @@ public class ReportServiceRestImpl implements ReportService {
         topProducts.addCell(new Phrase("% of total", cellHeaderFont));
         topProducts.setWidthPercentage(100);
         topProducts.setHeaderRows(1);
-        for(Product product : report.getTopProducts()){
+        for (Product product : report.getTopProducts()) {
             topProducts.addCell(product.getName());
             topProducts.addCell(product.getPrice() + "");
             topProducts.addCell(product.getStock() + "");
-            topProducts.addCell((product.getTotalSales() * product.getPrice()) + "");
+            topProducts.addCell((product.getTotalSales()
+                    * product.getPrice()) + "");
             topProducts.addCell(report.getSalesPercent(
-                    (double)product.getTotalSales() * product.getPrice()) + "");
+                    (double) product.getTotalSales()
+                            * product.getPrice()) + "");
 
         }
         document.add(topProducts);

@@ -56,8 +56,8 @@ public class ReportController implements Serializable {
     public StreamedContent getPdf() {
 
         String path = "resources/report.pdf";
-        ServletContext context = ((ServletContext)FacesContext.getCurrentInstance()
-                .getExternalContext().getContext());
+        ServletContext context = (ServletContext)FacesContext.getCurrentInstance()
+                .getExternalContext().getContext();
         try {
             reportService.generatePDF(report, dateFrom, context.getRealPath(path));
         } catch (DocumentException e) {
@@ -104,16 +104,14 @@ public class ReportController implements Serializable {
     }
 
     public PieChartModel getPieChart() {
-        if (pieChart == null) {
-            pieChart = new PieChartModel();
-            for (Map.Entry<String, Integer> status
-                    : report.getOrdersPerStatus().entrySet()) {
-                pieChart.set(status.getKey(), status.getValue());
-            }
-            pieChart.setTitle("Orders per status");
-            pieChart.setShowDataLabels(true);
-            pieChart.setShowDatatip(true);
+        pieChart = new PieChartModel();
+        for (Map.Entry<String, Integer> status
+                : report.getOrdersPerStatus().entrySet()) {
+            pieChart.set(status.getKey(), status.getValue());
         }
+        pieChart.setTitle("Orders per status");
+        pieChart.setShowDataLabels(true);
+        pieChart.setShowDatatip(true);
         return pieChart;
     }
 
