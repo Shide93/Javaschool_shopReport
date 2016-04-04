@@ -59,7 +59,7 @@ public class ReportController implements Serializable {
         ServletContext context = (ServletContext)FacesContext.getCurrentInstance()
                 .getExternalContext().getContext();
         try {
-            reportService.generatePDF(report, dateFrom, context.getRealPath(path));
+            reportService.generatePDF(report, dateFrom, context.getRealPath("/" + path));
         } catch (DocumentException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {

@@ -155,6 +155,10 @@
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <version>${version.wildfly.maven.plugin}</version>
+                <configuration>
+                    <jvmArgs>-Djboss.socket.binding.port-offset=1</jvmArgs>
+                    <port>9991</port>
+                </configuration>
             </plugin>
         </plugins>
     </build>
