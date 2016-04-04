@@ -149,6 +149,11 @@ public class Report implements Serializable{
         this.topProducts = topProducts;
     }
 
+    /**
+     * Gets period orders.
+     *
+     * @return the period orders
+     */
     public long getPeriodOrders() {
         long ordersCount = 0L;
         for (Map.Entry<String, Integer> order : ordersPerStatus.entrySet()) {
@@ -156,8 +161,15 @@ public class Report implements Serializable{
         }
         return ordersCount;
     }
+
+    /**
+     * Gets sales percent.
+     *
+     * @param value the value
+     * @return the sales percent
+     */
     public double getSalesPercent(double value) {
-        return new BigDecimal(value / this.periodSales * 100)
+        return BigDecimal.valueOf(value / this.periodSales * 100)
                 .setScale(2, RoundingMode.UP).doubleValue();
     }
 }

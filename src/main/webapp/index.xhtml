@@ -10,24 +10,41 @@
         <ui:composition template="layout.xhtml">
             <ui:define name="content">
                 <p:panel header="Select report parameters" styleClass="center-element width50percent">
-                    <h:form id="reportSettings" styleClass="center-element width50percent">
-                        <h:panelGrid columns="2" cellpadding="5" styleClass="center-element">
+                    <h:form id="reportSettings" styleClass="center-element" >
+                        <h:panelGrid columns="3" cellpadding="5" styleClass="center-element">
                             <p:outputLabel for="topUsersCount" value="Top users count:" />
-                            <p:inputText id="topUsersCount" value="#{reportController.topUsersCount}"/>
+                            <p:inputText id="topUsersCount" value="#{reportController.topUsersCount}"
+                                         required="true" requiredMessage="Field is required"
+                                         converterMessage="Value must be a number">
+                                <f:convertNumber minIntegerDigits="1" integerOnly="true"/>
+                            </p:inputText>
+                            <p:message for="topUsersCount" />
 
                             <p:outputLabel for="topProductsCount" value="Top products count:" />
-                            <p:inputText id="topProductsCount" value="#{reportController.topProductsCount}"/>
+                            <p:inputText id="topProductsCount" value="#{reportController.topUsersCount}"
+                                         required="true" requiredMessage="Field is required"
+                                         converterMessage="Value must be a number">
+                                <f:convertNumber minIntegerDigits="1" integerOnly="true"/>
+                            </p:inputText>
+                            <p:message for="topProductsCount" />
 
                             <p:outputLabel for="mask" value="Report from:" />
-                            <p:calendar id="mask" value="#{reportController.dateFrom}" pattern="dd-MM-yyyy" mask="true" />
+                            <p:calendar id="mask" value="#{reportController.dateFrom}" pattern="dd-MM-yyyy" mask="true"
+                                        converterMessage="Enter correct date" />
+                            <p:message for="mask" />
 
                             <p:outputLabel for="accessToken" value="Access token:" />
-                            <p:inputText id="accessToken" value="#{reportController.accessToken}"/>
+                            <p:inputText id="accessToken" value="#{reportController.accessToken}"
+                                         required="true" requiredMessage="Token is required"/>
+                            <p:message for="accessToken"  />
 
-                            <p:commandButton value="Submit" action="#{reportController.showReport()}"/>
+                            <p:commandButton value="Submit" validateClient="true" ajax="false"
+                                             action="#{reportController.showReport()}" onexception="PF('exceptionDialog').show();"/>
+                            <h:outputText value="#{reportController.errMsg}" />
                         </h:panelGrid>
                     </h:form>
                 </p:panel>
+
             </ui:define>
         </ui:composition>
     </h:body>

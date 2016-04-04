@@ -12,31 +12,33 @@
     <h:body>
         <ui:composition template="layout.xhtml">
             <ui:define name="content">
-                <p:panel header="Shop report from #{reportController.formattedDate}">
+                <p:panel styleClass="margin5" header="Shop report from #{reportController.formattedDate}">
+                <p:panel >
                     <p:panelGrid columns="2">
                         <p:outputLabel for="periodSales" value="Total sales:"/>
-                        <p:outputLabel id="periodSales" value="#{reportController.report.periodSales}"/>
-
                         <p:outputLabel for="periodOrders" value="Total orders:"/>
+
+                        <p:outputLabel id="periodSales" value="#{reportController.report.periodSales}"/>
                         <p:outputLabel id="periodOrders" value="#{reportController.report.periodOrders}"/>
                     </p:panelGrid>
-                    <p:panel >
-                        <p:dataTable styleClass="width50percent inline" value="#{reportController.report.ordersPerStatus.entrySet().toArray()}"
-                                    var="status">
-                            <f:facet name="header">
-                                Orders per status
-                            </f:facet>
-                            #{status.key}, #{status.value}
-                            <p:column headerText="Status" sortBy="#{status.key}">
-                                <h:outputText value="#{status.key}" />
-                            </p:column>
-                            <p:column headerText="Count" sortBy="#{status.value}">
-                                <h:outputText value="#{status.value}" />
-                            </p:column>}
-                        </p:dataTable>
-                        <p:chart styleClass="inline" type="pie" model="#{reportController.pieChart}" style="width:400px;height:300px" />
-                    </p:panel>
-
+                </p:panel >
+                <p:panel >
+                    <p:dataTable styleClass="width50percent inline" value="#{reportController.report.ordersPerStatus.entrySet().toArray()}"
+                                var="status">
+                        <f:facet name="header">
+                            Orders per status
+                        </f:facet>
+                        #{status.key}, #{status.value}
+                        <p:column headerText="Status" sortBy="#{status.key}">
+                            <h:outputText value="#{status.key}" />
+                        </p:column>
+                        <p:column headerText="Count" sortBy="#{status.value}">
+                            <h:outputText value="#{status.value}" />
+                        </p:column>}
+                    </p:dataTable>
+                    <p:chart styleClass="inline" type="pie" model="#{reportController.pieChart}" style="width:400px;height:300px" />
+                </p:panel>
+                <p:panel >
                     <h:form>
                         <p:dataTable var="user" value="#{reportController.report.topUsers}">
                             <f:facet name="header">
@@ -66,7 +68,8 @@
                             </p:column>
                         </p:dataTable>
                     </h:form>
-
+                </p:panel >
+                <p:panel >
                     <h:form>
                         <p:dataTable var="product" value="#{reportController.report.topProducts}">
                             <f:facet name="header">
@@ -96,13 +99,15 @@
                             </p:column>
                         </p:dataTable>
                     </h:form>
-
+                </p:panel >
+                <p:panel >
                     <h:form>
                         <p:commandButton value="Download"
                                          ajax="false" icon="ui-icon-arrowthick-1-s">
                             <p:fileDownload value="#{reportController.pdf}" />
                         </p:commandButton>
                     </h:form>
+                </p:panel >
                 </p:panel>
             </ui:define>
         </ui:composition>

@@ -1,18 +1,27 @@
 package com.tsystems.javaschool.report.ejb;
 
-import com.itextpdf.text.*;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.tsystems.javaschool.report.ejb.dto.Product;
 import com.tsystems.javaschool.report.ejb.dto.Report;
 import com.tsystems.javaschool.report.ejb.dto.User;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.ejb.Singleton;
-import javax.ejb.Stateless;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import java.io.*;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -22,6 +31,12 @@ import java.util.Map;
  */
 @Singleton
 public class ReportServiceRestImpl implements ReportService {
+
+    /**
+     * The constant LOGGER.
+     */
+    private static final Logger LOGGER =
+            LogManager.getLogger(ReportServiceRestImpl.class);
 
     public static final String REST_SERVICE_ENTRY_POINT
             = "http://localhost:8080/api/";
@@ -33,21 +48,25 @@ public class ReportServiceRestImpl implements ReportService {
                                 final Integer topUsersCount,
                                 final Integer topProductsCount,
                                 final String accessToken) {
-
-        Client client = ClientBuilder.newClient();
-        WebTarget target =
-                client.target(REST_SERVICE_ENTRY_POINT + "report/");
-                if (dateFrom != null) {
-                    target = target.queryParam("dateFrom",
-                            fmt.format(dateFrom));
-                }
-                target = target.queryParam("topUsersCount", topUsersCount)
-                .queryParam("topProductsCount", topProductsCount)
-                .queryParam("accessToken", accessToken);
-        Report report = target.request().get(Report.class);
-        //TODO: handle webservice errors
-        client.close();
-        return report;
+        LOGGER.info("getShopReport called!");
+        try {
+            Client client = ClientBuilder.newClient();
+            WebTarget target =
+                    client.target(REST_SERVICE_ENTRY_POINT + "report/");
+            if (dateFrom != null) {
+                target = target.queryParam("dateFrom",
+                        fmt.format(dateFrom));
+            }
+            target = target.queryParam("topUsersCount", topUsersCount)
+                    .queryParam("topProductsCount", topProductsCount)
+                    .queryParam("accessToken", accessToken);
+            Report report = target.request().get(Report.class);
+            client.close();
+            return report;
+        } catch (NotAuthorizedException e) {
+            LOGGER.error("Token " + accessToken + " is wrong or expired", e);
+            return null;
+        }
     }
 
     @Override
@@ -55,8 +74,6 @@ public class ReportServiceRestImpl implements ReportService {
             throws DocumentException, FileNotFoundException {
 
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-        PdfWriter writer = PdfWriter.getInstance(document,
-                new FileOutputStream(path));
         document.open();
         Font chapterFont = FontFactory.getFont(FontFactory.TIMES_ROMAN,
                 20, Font.BOLD);
