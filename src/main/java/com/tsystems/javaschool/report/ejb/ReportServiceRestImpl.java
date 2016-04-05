@@ -10,6 +10,7 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.tsystems.javaschool.report.ejb.dto.Product;
 import com.tsystems.javaschool.report.ejb.dto.Report;
 import com.tsystems.javaschool.report.ejb.dto.User;
@@ -24,6 +25,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -72,8 +74,7 @@ public class ReportServiceRestImpl implements ReportService {
             target = target.queryParam("topUsersCount", topUsersCount)
                     .queryParam("topProductsCount", topProductsCount)
                     .queryParam("accessToken", accessToken);
-            Report report = target.request().get(Report.class);
-            return report;
+            return target.request().get(Report.class);
         } catch (NotAuthorizedException e) {
             LOGGER.error("Token " + accessToken + " is wrong or expired", e);
             return null;
@@ -85,6 +86,7 @@ public class ReportServiceRestImpl implements ReportService {
             throws DocumentException, FileNotFoundException {
 
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+        PdfWriter.getInstance(document, new FileOutputStream(path));
         document.open();
         Font chapterFont = FontFactory.getFont(FontFactory.TIMES_ROMAN,
                 20, Font.BOLD);
