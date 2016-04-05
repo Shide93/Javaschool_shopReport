@@ -16,6 +16,8 @@ import com.tsystems.javaschool.report.ejb.dto.User;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.client.Client;
@@ -42,7 +44,18 @@ public class ReportServiceRestImpl implements ReportService {
             = "http://localhost:8080/api/";
     private SimpleDateFormat fmt
             = new SimpleDateFormat("dd-MM-yyyy");
+    private Client client;
 
+    @PostConstruct
+    public void postConstruct() {
+        LOGGER.info("Client created");
+        client = ClientBuilder.newClient();
+    }
+    @PreDestroy
+    public void preDestroy() {
+        LOGGER.info("Client closed");
+        client.close();
+    }
     @Override
     public Report getShopReport(final Date dateFrom,
                                 final Integer topUsersCount,
@@ -50,7 +63,6 @@ public class ReportServiceRestImpl implements ReportService {
                                 final String accessToken) {
         LOGGER.info("getShopReport called!");
         try {
-            Client client = ClientBuilder.newClient();
             WebTarget target =
                     client.target(REST_SERVICE_ENTRY_POINT + "report/");
             if (dateFrom != null) {
@@ -61,7 +73,6 @@ public class ReportServiceRestImpl implements ReportService {
                     .queryParam("topProductsCount", topProductsCount)
                     .queryParam("accessToken", accessToken);
             Report report = target.request().get(Report.class);
-            client.close();
             return report;
         } catch (NotAuthorizedException e) {
             LOGGER.error("Token " + accessToken + " is wrong or expired", e);
