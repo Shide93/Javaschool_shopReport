@@ -4,6 +4,7 @@ Additional program, that connects by webservice with the main shop and retreive 
 Main app: https://github.com/Shide93/Javaschool_webShop
 
 Задание:
+
 В задании требуется написать отдельное приложение, которое будет показывать отчет о продажах: сколько денег получено, топ товаров и клиентов: сколько процентов выручки они приносят.
 
 1. Приложение должно связываться с основным приложением через веб-сервис.
